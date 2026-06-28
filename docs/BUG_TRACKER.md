@@ -112,6 +112,7 @@ When filing a new bug, copy this template:
 |------|--------|--------|-------|
 | 2026-06-27 | Created bug tracker | — | Initial setup |
 | 2026-06-28 | Foundation implemented (FOLDLIGHT-PROMPT-001) | — | App shell, navigation, services, persistence, design system + unit tests added. No defects found during implementation review. |
+| 2026-06-28 | Core fold engine implemented (FOLDLIGHT-PROMPT-002) | — | Board/fold/combination/beam models + solver + undo/reset + 6 test files. No defects found; engine is Foundation-only and deterministic. |
 
 ---
 
@@ -126,7 +127,9 @@ are not mistaken for bugs. None are P0/P1.
 | LIM-002 | Persistence | MVP uses Codable file storage + UserDefaults instead of SwiftData (per Phase 1 prompt). | Swap behind `SaveService` protocol in a later phase (tracker T002-05). |
 | LIM-003 | Audio | `AudioService` is a documented stub (configures the session, no samples). | Wire ASMR/music assets in E010. |
 | LIM-004 | App icon | Placeholder 1024px icon slot, no artwork. | Produce icon set in E010 (tracker T002-03). |
-| LIM-005 | Play screen | Placeholder; the interactive folding board is not yet implemented. | Core engine (Phase 2) + SpriteKit board (Phase 3). |
+| LIM-005 | Play screen | Lightweight SwiftUI engine demo (fold/undo/reset on a sample puzzle). The polished SpriteKit board with free fold gestures is not yet built. | SpriteKit board (Phase 3). |
+| LIM-006 | Hint engine | A general solver-based "next best fold" hint (T004-06) is not implemented; the Play demo uses a known sample solution. | Implement search-based hint engine (Phase 6). |
+| LIM-007 | Geometric unfold | `FoldEngine.unfold()` (reverse-construction primitive) is deferred; undo uses board snapshots instead. | Add for the procedural generator (Phase 4). |
 
 ---
 

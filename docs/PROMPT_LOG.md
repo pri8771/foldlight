@@ -538,7 +538,7 @@ Xcode build + test run is the required next verification step on a macOS host.
 ---
 
 ### FOLDLIGHT-PROMPT-002: Core Puzzle Engine
-**Date:** 2026-06-27 | **Phase:** Implementation | **Tool:** Claude Code | **Epic:** E004 | **Status:** 📅 Queued
+**Date:** 2026-06-27 | **Phase:** Implementation | **Tool:** Claude Code | **Epic:** E004 | **Status:** ✅ Used (executed 2026-06-28)
 
 ```
 Implement Phase 2 for Foldlight: the core puzzle engine.
@@ -601,6 +601,61 @@ Acceptance criteria:
 - Engine has no SpriteKit or SwiftUI dependency.
 - Project tracker, bug tracker, and prompt log updated.
 ```
+
+**Outcome (2026-06-28, Claude Code):**
+
+Built the deterministic, UI-independent core puzzle engine under
+`Foldlight/Core/Engine/` (Foundation-only — verified no SwiftUI/SpriteKit/UIKit
+imports). The documented Foldlight mechanic was implemented as specified, not
+redesigned.
+
+Models: `BoardCoordinate`, `Orientation`, `TileType` (+ `BeamBehavior`), `Tile`,
+`Cell` (layer/overlap representation), `Board` (value type), `Fold` /
+`FoldDirection` / `FoldAxis`, `CombinationResult` / `CombinationMatrix`,
+`BeamDirection`/`BeamSegment`/`BeamResult`, `Puzzle` / `PuzzleGoal` /
+`PuzzleResult`, `PuzzleState` (live play state with bounded undo history).
+
+Mechanics:
+- **Folds** — `FoldEngine.apply` detects legal (interior-crease) folds,
+  mirror-transforms the source region onto the target, maps source→destination
+  coordinates, recomputes board bounds (handles growth), and resolves overlaps.
+  `FoldEngine.replay` gives deterministic replay; `isSource` /
+  `reflectedCoordinate` are unit-tested directly.
+- **Overlap & combinations** — non-matching overlaps stack as layers; the 8
+  documented symmetric rules transform the cell (win, connected path, reflected
+  beam, revealed path, opened gate, grown bridge, steam blocker, captured
+  monster).
+- **Beam** — `BeamSolver` raycasts from the source, follows conductors, reflects
+  off mirrors by orientation, stops on blockers/edges, detects the goal, and caps
+  at 100 steps (loop guard). Returns rich `[BeamSegment]` for UI animation.
+- **Undo / reset** — board-snapshot history (max 20, PRD §3.5).
+- **Serialization** — `Board` and `Puzzle` are `Codable` (round-trip tested).
+
+Tests (6 files): `BoardTests`, `CombinationMatrixTests`, `FoldEngineTests`,
+`BeamSolverTests`, `PuzzleStateTests` (+ Phase 1 service tests) — covering board
+init/coordinate mapping, legal/illegal folds, fold application, overlap &
+combination behavior, undo/reset, light-reaches-goal / blocked / mirror
+reflection, and deterministic replay. The hardcoded `SamplePuzzles.firstFold`
+is solved end-to-end through engine calls.
+
+Also wired a lightweight, non-SpriteKit demo through `PlayView`/`PlayViewModel`
+so the engine is playable in-app (fold/undo/reset, live beam highlight) ahead of
+the Phase 3 SpriteKit board.
+
+**Verification:** Linux container — no Xcode/Swift toolchain, so `swift test` /
+`xcodebuild` were not run in-session. Engine code is pure-Foundation and was
+written + reviewed to compile and pass under Xcode 16; a `swift test` run on a
+macOS host is the next verification step.
+
+**Acceptance criteria status:**
+- Puzzle engine compiles independently of UI — ✅ Foundation-only (verified by import scan).
+- Unit tests pass — ⚠️ written to pass; not executable in this environment (no Xcode).
+- A hardcoded puzzle solvable through engine calls — ✅ `SamplePuzzles.firstFold`.
+- No SpriteKit/SwiftUI dependency in the engine — ✅.
+- Trackers + prompt log updated — ✅.
+
+**Deferred (tracked):** general solver-based hint engine (T004-06) and geometric
+`unfold()` primitive (T004-02) — see BUG_TRACKER LIM-006 / LIM-007.
 
 ---
 
@@ -862,10 +917,10 @@ Return:
 | Ideation (ChatGPT) | 2 | 2 | 0 |
 | Architecture (ChatGPT) | 2 | 0 | 2 |
 | Claude Code Universal | 1 | 1 | 0 |
-| Claude Code Implementation | 7 | 1 | 6 |
+| Claude Code Implementation | 7 | 2 | 5 |
 | Claude Code Audit | 1 | 0 | 1 |
-| **Total** | **13** | **4** | **9** |
+| **Total** | **13** | **5** | **8** |
 
 ---
 
-*Last updated: 2026-06-28 — FOLDLIGHT-PROMPT-001 (foundation) executed*
+*Last updated: 2026-06-28 — FOLDLIGHT-PROMPT-002 (core puzzle engine) executed*

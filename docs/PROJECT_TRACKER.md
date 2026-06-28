@@ -94,18 +94,28 @@
 ## EPIC E004: Core Fold Engine
 
 **Goal:** Implement the spatial folding mechanic with all tile combinations
-**Status:** 📅 Not Started
-**Est SP:** 34 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 34 | **Actual SP:** 24 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T004-01 | Implement FoldEngine.fold(axis:position:) | 📅 | 5 | — | 2026-07-07 | 2026-07-09 | — | — | E003 |
-| T004-02 | Implement FoldEngine.unfold() | 📅 | 3 | — | 2026-07-09 | 2026-07-10 | — | — | T004-01 |
-| T004-03 | Implement tile combination resolution logic | 📅 | 8 | — | 2026-07-10 | 2026-07-14 | — | — | T004-01 |
-| T004-04 | Implement light beam propagation algorithm | 📅 | 5 | — | 2026-07-14 | 2026-07-16 | — | — | T004-03 |
-| T004-05 | Implement win condition detection | 📅 | 2 | — | 2026-07-16 | 2026-07-16 | — | — | T004-04 |
+| T004-01 | Implement FoldEngine.fold(axis:position:) | ✅ | 5 | 5 | 2026-07-07 | 2026-07-09 | 2026-06-28 | 2026-06-28 | E003 |
+| T004-02 | Implement FoldEngine.unfold() | 🔄 | 3 | 2 | 2026-07-09 | 2026-07-10 | 2026-06-28 | — | T004-01 |
+| T004-03 | Implement tile combination resolution logic | ✅ | 8 | 6 | 2026-07-10 | 2026-07-14 | 2026-06-28 | 2026-06-28 | T004-01 |
+| T004-04 | Implement light beam propagation algorithm | ✅ | 5 | 5 | 2026-07-14 | 2026-07-16 | 2026-06-28 | 2026-06-28 | T004-03 |
+| T004-05 | Implement win condition detection | ✅ | 2 | 2 | 2026-07-16 | 2026-07-16 | 2026-06-28 | 2026-06-28 | T004-04 |
 | T004-06 | Implement hint engine (next best fold) | 📅 | 5 | — | 2026-07-17 | 2026-07-19 | — | — | T004-03 |
-| T004-07 | Write unit tests for fold engine | 📅 | 6 | — | 2026-07-19 | 2026-07-21 | — | — | T004-06 |
+| T004-07 | Write unit tests for fold engine | ✅ | 6 | 4 | 2026-07-19 | 2026-07-21 | 2026-06-28 | 2026-06-28 | T004-06 |
+
+**Phase 2 implementation notes (FOLDLIGHT-PROMPT-002, executed 2026-06-28):**
+- Engine lives in `Foldlight/Core/Engine/` and is **Foundation-only** (no SwiftUI/SpriteKit/UIKit imports), satisfying the UI-independence acceptance criterion. Models: `Board`, `BoardCoordinate`, `Cell` (layer/overlap representation), `Tile`, `TileType`, `Orientation`, `Fold`/`FoldDirection`/`FoldAxis`, `CombinationResult`/`CombinationMatrix`, `Beam*`, `Puzzle`/`PuzzleGoal`/`PuzzleResult`, `PuzzleState`.
+- T004-01: `FoldEngine.apply` mirror-transforms the source region, resolves overlaps via the combination matrix, and recomputes board bounds (supports board growth). `replay` gives deterministic fold replay.
+- T004-02: Undo/reset implemented in `PuzzleState` via bounded board snapshots (max 20, per PRD §3.5). Geometric `unfold()` (reverse-construction primitive for the generator) is deferred to Phase 4 — In Progress.
+- T004-03: All 8 documented combination rules (symmetric) including win, connected path, reflected beam, revealed path, opened gate, grown bridge, steam blocker, captured monster.
+- T004-04/05: `BeamSolver` raycasts from the source, reflects off mirrors (orientation-dependent), blocks on opaque tiles, detects goal, and caps at 100 steps (loop guard). Win = beam reaches goal OR a fold overlaps light onto the goal.
+- T004-06: Not implemented as a general solver-based hint engine. The Play demo uses a known sample solution as a placeholder hint; a search-based hint engine remains 📅.
+- T004-07: 6 engine test files (board, combinations, fold engine, beam solver, puzzle state) covering the full prompt test matrix. Sample `firstFold` puzzle is solvable through engine calls.
+- Lightweight non-SpriteKit demo wired through `PlayView`/`PlayViewModel` so the engine is playable in-app ahead of the Phase 3 SpriteKit board.
 
 ---
 
@@ -270,7 +280,7 @@
 | E001 | Project Setup & Docs | 21 | ✅ | 2026-06-27 | 2026-06-27 |
 | E002 | Xcode Initialization | 13 | 🔄 | 2026-06-28 | 2026-07-03 |
 | E003 | Data Models | 21 | 📅 | 2026-07-03 | 2026-07-07 |
-| E004 | Fold Engine | 34 | 📅 | 2026-07-07 | 2026-07-21 |
+| E004 | Fold Engine | 34 | 🔄 | 2026-06-28 | 2026-07-21 |
 | E005 | Puzzle Generator | 26 | 📅 | 2026-07-21 | 2026-07-31 |
 | E006 | SpriteKit Scene | 55 | 📅 | 2026-08-01 | 2026-08-24 |
 | E007 | SwiftUI Screens | 40 | 📅 | 2026-08-24 | 2026-09-09 |
@@ -289,6 +299,7 @@
 |--------|-------|-----|-----------|----------|-------|
 | Sprint 0 | 2026-06-27 | 2026-06-27 | 21 | 24 | Documentation sprint (E001) |
 | Sprint 1 | 2026-06-28 | 2026-06-28 | 13 | 9 | Foundation sprint (E002 + E007 Home/Settings foundation). App shell, navigation, services, persistence, design system, tests. |
+| Sprint 2 | 2026-06-28 | 2026-06-28 | 34 | 24 | Core fold engine (E004): board/fold/combination models, fold application, beam solver, undo/reset, serialization, 6 test files + in-app demo. |
 
 ---
 
