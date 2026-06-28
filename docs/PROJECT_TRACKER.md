@@ -140,24 +140,38 @@
 ## EPIC E006: SpriteKit Game Scene
 
 **Goal:** Build the visual puzzle board with animations
-**Status:** 📅 Not Started
-**Est SP:** 55 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 55 | **Actual SP:** 18 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T006-01 | Set up SpriteKit GameScene with SKCamera | 📅 | 3 | — | 2026-08-01 | 2026-08-02 | — | — | E004 |
-| T006-02 | Implement BoardNode (tile grid rendering) | 📅 | 5 | — | 2026-08-02 | 2026-08-04 | — | — | T006-01 |
-| T006-03 | Implement TileNode with 7 tile designs | 📅 | 8 | — | 2026-08-04 | 2026-08-08 | — | — | T006-02 |
-| T006-04 | Implement swipe/tap gesture recognition | 📅 | 3 | — | 2026-08-08 | 2026-08-09 | — | — | T006-01 |
-| T006-05 | Implement fold animation (paper-fold physics) | 📅 | 8 | — | 2026-08-09 | 2026-08-13 | — | — | T006-03 |
-| T006-06 | Implement light beam particle animation | 📅 | 5 | — | 2026-08-13 | 2026-08-15 | — | — | T006-03 |
+| T006-01 | Set up SpriteKit GameScene with SKCamera | 🔄 | 3 | 2 | 2026-08-01 | 2026-08-02 | 2026-06-28 | — | E004 |
+| T006-02 | Implement BoardNode (tile grid rendering) | ✅ | 5 | 4 | 2026-08-02 | 2026-08-04 | 2026-06-28 | 2026-06-28 | T006-01 |
+| T006-03 | Implement TileNode with 7 tile designs | ✅ | 8 | 4 | 2026-08-04 | 2026-08-08 | 2026-06-28 | 2026-06-28 | T006-02 |
+| T006-04 | Implement swipe/tap gesture recognition | ✅ | 3 | 3 | 2026-08-08 | 2026-08-09 | 2026-06-28 | 2026-06-28 | T006-01 |
+| T006-05 | Implement fold animation (paper-fold physics) | 🔄 | 8 | 2 | 2026-08-09 | 2026-08-13 | 2026-06-28 | — | T006-03 |
+| T006-06 | Implement light beam particle animation | 🔄 | 5 | 2 | 2026-08-13 | 2026-08-15 | 2026-06-28 | — | T006-03 |
 | T006-07 | Implement tile combination visual effects | 📅 | 5 | — | 2026-08-15 | 2026-08-17 | — | — | T006-05 |
-| T006-08 | Implement win celebration animation | 📅 | 3 | — | 2026-08-17 | 2026-08-18 | — | — | T006-07 |
+| T006-08 | Implement win celebration animation | ✅ | 3 | 3 | 2026-08-17 | 2026-08-18 | 2026-06-28 | 2026-06-28 | T006-07 |
 | T006-09 | Implement camera zoom/pan for large boards | 📅 | 3 | — | 2026-08-18 | 2026-08-19 | — | — | T006-01 |
-| T006-10 | Implement undo/redo visual feedback | 📅 | 2 | — | 2026-08-19 | 2026-08-20 | — | — | T006-05 |
+| T006-10 | Implement undo/redo visual feedback | 🔄 | 2 | 1 | 2026-08-19 | 2026-08-20 | 2026-06-28 | — | T006-05 |
 | T006-11 | Implement hint visual overlay | 📅 | 3 | — | 2026-08-20 | 2026-08-21 | — | — | T006-04 |
-| T006-12 | Audio: fold ASMR sounds + music integration | 📅 | 5 | — | 2026-08-21 | 2026-08-23 | — | — | T006-05 |
-| T006-13 | 60fps/120fps performance optimization | 📅 | 2 | — | 2026-08-23 | 2026-08-24 | — | — | T006-09 |
+| T006-12 | Audio: fold ASMR sounds + music integration | 🔄 | 5 | 1 | 2026-08-21 | 2026-08-23 | 2026-06-28 | — | T006-05 |
+| T006-13 | 60fps/120fps performance optimization | 🔄 | 2 | 1 | 2026-08-23 | 2026-08-24 | 2026-06-28 | — | T006-09 |
+
+**Phase 3 implementation notes (FOLDLIGHT-PROMPT-003, executed 2026-06-28):**
+- Renderer lives in `Foldlight/Features/Game/` (`GameScene`, `TileNode`, `GameTheme`) and the gesture mapping in `FoldGestureInterpreter` (pure, unit-tested). `GameViewModel` is the MVVM bridge; the scene proposes folds and the VM applies them through the engine — **no gameplay rules in the rendering layer** (acceptance criterion met).
+- T006-01: `GameScene` renders + handles input. `SKCamera` (zoom/pan) deferred to T006-09 — not needed for current board sizes (In Progress).
+- T006-02/03: Grid rendering + `TileNode` with all engine tile types and 3 visual states (idle / lit-by-beam / emphasized). Bespoke per-type art is E010; glyph placeholders for now.
+- T006-04: Drag-to-fold gestures with start-cell = flap edge, drag direction = fold direction; fold preview shows source region + destination outlines and legal/illegal tint.
+- T006-05: Folds apply with preview + shake feedback; the animated paper-fold transition is deferred to polish (In Progress).
+- T006-06: Beam rendered as a glowing stroked line; particle-based beam deferred (In Progress).
+- T006-08: Win celebration (radiating ring + sparks) + SwiftUI overlay.
+- T006-12: Sound hooks wired to the (stub) audio service; ASMR samples land in E010.
+- Haptics for fold / invalid fold / undo / completion are wired via the haptics service.
+
+### E007-04 Puzzle HUD (delivered alongside E006)
+The Play screen HUD (move count, puzzle status, undo/reset buttons, win overlay) is implemented in `PlayView`. Timer and hint controls remain pending. See E007 table (T007-04 → 🔄).
 
 ---
 
@@ -172,7 +186,7 @@
 | T007-01 | Main Menu / Home Screen | 🔄 | 3 | 1 | 2026-08-24 | 2026-08-25 | 2026-06-28 | — | E006 |
 | T007-02 | World Map Screen (10 biomes) | 📅 | 5 | — | 2026-08-25 | 2026-08-27 | — | — | T007-01 |
 | T007-03 | Level Select Screen (per biome) | 📅 | 3 | — | 2026-08-27 | 2026-08-28 | — | — | T007-02 |
-| T007-04 | Puzzle HUD (moves, timer, hints) | 📅 | 3 | — | 2026-08-28 | 2026-08-29 | — | — | E006 |
+| T007-04 | Puzzle HUD (moves, timer, hints) | 🔄 | 3 | 2 | 2026-08-28 | 2026-08-29 | 2026-06-28 | — | E006 |
 | T007-05 | Cosmetic Shop screen | 📅 | 5 | — | 2026-08-29 | 2026-08-31 | — | — | E008 |
 | T007-06 | Settings screen | 🔄 | 2 | 1 | 2026-08-31 | 2026-09-01 | 2026-06-28 | — | T007-01 |
 | T007-07 | Achievement screen | 📅 | 5 | — | 2026-09-01 | 2026-09-03 | — | — | T007-02 |
@@ -282,7 +296,7 @@
 | E003 | Data Models | 21 | 📅 | 2026-07-03 | 2026-07-07 |
 | E004 | Fold Engine | 34 | 🔄 | 2026-06-28 | 2026-07-21 |
 | E005 | Puzzle Generator | 26 | 📅 | 2026-07-21 | 2026-07-31 |
-| E006 | SpriteKit Scene | 55 | 📅 | 2026-08-01 | 2026-08-24 |
+| E006 | SpriteKit Scene | 55 | 🔄 | 2026-06-28 | 2026-08-24 |
 | E007 | SwiftUI Screens | 40 | 📅 | 2026-08-24 | 2026-09-09 |
 | E008 | Monetization (StoreKit 2) | 21 | 📅 | 2026-09-09 | 2026-09-15 |
 | E009 | Game Center | 13 | 📅 | 2026-09-15 | 2026-09-19 |
@@ -300,6 +314,7 @@
 | Sprint 0 | 2026-06-27 | 2026-06-27 | 21 | 24 | Documentation sprint (E001) |
 | Sprint 1 | 2026-06-28 | 2026-06-28 | 13 | 9 | Foundation sprint (E002 + E007 Home/Settings foundation). App shell, navigation, services, persistence, design system, tests. |
 | Sprint 2 | 2026-06-28 | 2026-06-28 | 34 | 24 | Core fold engine (E004): board/fold/combination models, fold application, beam solver, undo/reset, serialization, 6 test files + in-app demo. |
+| Sprint 3 | 2026-06-28 | 2026-06-28 | 55 | 18 | Playable SpriteKit board (E006 + E007-04 HUD): GameScene/TileNode renderer, drag-to-fold + preview, beam draw, win animation, GameViewModel bridge, gesture interpreter + tests. |
 
 ---
 

@@ -660,7 +660,7 @@ macOS host is the next verification step.
 ---
 
 ### FOLDLIGHT-PROMPT-003: Playable Puzzle Board UI
-**Date:** 2026-06-27 | **Phase:** Implementation | **Tool:** Claude Code | **Epic:** E006 | **Status:** 📅 Queued
+**Date:** 2026-06-27 | **Phase:** Implementation | **Tool:** Claude Code | **Epic:** E006 | **Status:** ✅ Used (executed 2026-06-28)
 
 ```
 Implement Phase 3 for Foldlight: playable puzzle board UI.
@@ -705,6 +705,44 @@ Acceptance criteria:
 - No gameplay logic is trapped inside the rendering layer.
 - App builds. Tests still pass. Trackers updated.
 ```
+
+**Outcome (2026-06-28, Claude Code):**
+
+Turned the Phase 2 engine into a playable board under `Foldlight/Features/Game/`,
+preserving strict engine/UI separation.
+
+- **`FoldGestureInterpreter`** (pure, Foundation/CoreGraphics only, unit-tested) —
+  maps a drag (grabbed cell + vector) to a candidate `Fold`: grabbed cell = flap
+  edge, drag direction = fold direction.
+- **`GameScene` (SpriteKit)** — renders the grid from a `Board`, draws the light
+  beam as a glowing line, highlights beam-lit tiles, handles drag gestures, shows
+  a **fold preview** (source region fill + destination outlines, legal/illegal
+  tint), shakes on rejected folds, and plays a **win celebration** (radiating ring
+  + sparks). It holds no rules — it calls back to the view model to apply folds.
+- **`TileNode`** — a tile panel + glyph with 3 visual states (idle / lit /
+  emphasized) covering all engine tile types (bespoke art is E010).
+- **`GameViewModel`** — MVVM bridge owning `PuzzleState`; applies proposed folds
+  through the engine, dispatches haptics (fold / invalid / undo / win) and sound
+  hooks (stub audio service), exposes move count / status / undo / reset, and
+  triggers the win overlay.
+- **`PlayView`** — rewritten to host `SpriteView` + a SwiftUI HUD (move count,
+  status, undo/reset) + animated win overlay. Portrait-safe layout.
+
+A new test file (`FoldGestureInterpreterTests`) verifies the gesture→fold mapping
+and that the generated fold is legal and solves `SamplePuzzles.firstFold`.
+
+**Verification:** Linux container — no Xcode/SpriteKit toolchain — so the app was
+not built or run in-session. SpriteKit code was written to idiomatic iOS 17 /
+Xcode 16 APIs and reviewed; the pure gesture mapping is covered by unit tests. A
+build + on-simulator play-through is the next verification step on macOS.
+
+**Acceptance criteria status:**
+- Open Play and solve a hardcoded puzzle — ✅ implemented (drag the bottom row up to solve `firstFold`); engine path is unit-tested.
+- Fold gestures work — ✅ implemented (drag-to-fold + preview); on-device check pending a macOS build.
+- Undo/reset/completion — ✅ implemented; completion shown via beam glow, win animation, and overlay.
+- No gameplay logic in the rendering layer — ✅ rules stay in engine/VM; scene only proposes folds.
+- App builds / tests pass — ⚠️ not executable here (no Xcode); written to pass.
+- Trackers updated — ✅.
 
 ---
 
@@ -917,10 +955,10 @@ Return:
 | Ideation (ChatGPT) | 2 | 2 | 0 |
 | Architecture (ChatGPT) | 2 | 0 | 2 |
 | Claude Code Universal | 1 | 1 | 0 |
-| Claude Code Implementation | 7 | 2 | 5 |
+| Claude Code Implementation | 7 | 3 | 4 |
 | Claude Code Audit | 1 | 0 | 1 |
-| **Total** | **13** | **5** | **8** |
+| **Total** | **13** | **6** | **7** |
 
 ---
 
-*Last updated: 2026-06-28 — FOLDLIGHT-PROMPT-002 (core puzzle engine) executed*
+*Last updated: 2026-06-28 — FOLDLIGHT-PROMPT-003 (playable puzzle board UI) executed*
