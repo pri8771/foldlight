@@ -3,7 +3,7 @@
 **Game:** Foldlight — Spatial Puzzle
 **Platform:** iOS 17.0+
 **Stack:** Swift / SwiftUI / SpriteKit / SwiftData / StoreKit 2
-**Last Updated:** 2026-06-27
+**Last Updated:** 2026-06-28
 
 ---
 
@@ -49,18 +49,24 @@
 ## EPIC E002: Xcode Project Initialization
 
 **Goal:** Set up Xcode project with proper architecture skeleton
-**Status:** 📅 Not Started
-**Est SP:** 13 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 13 | **Actual SP:** 9 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T002-01 | Create Xcode project (FoldlightApp) | 📅 | 1 | — | 2026-07-01 | 2026-07-01 | — | — | E001 |
-| T002-02 | Set deployment target: iOS 17.0 | 📅 | 1 | — | 2026-07-01 | 2026-07-01 | — | — | T002-01 |
-| T002-03 | Configure app icon + launch screen | 📅 | 2 | — | 2026-07-01 | 2026-07-01 | — | — | T002-01 |
-| T002-04 | Set up Clean Architecture folder structure | 📅 | 2 | — | 2026-07-01 | 2026-07-02 | — | — | T002-01 |
-| T002-05 | Configure SwiftData container (AppDatabase) | 📅 | 3 | — | 2026-07-02 | 2026-07-02 | — | — | T002-04 |
+| T002-01 | Create Xcode project (FoldlightApp) | ✅ | 1 | 1 | 2026-07-01 | 2026-07-01 | 2026-06-28 | 2026-06-28 | E001 |
+| T002-02 | Set deployment target: iOS 17.0 | ✅ | 1 | 1 | 2026-07-01 | 2026-07-01 | 2026-06-28 | 2026-06-28 | T002-01 |
+| T002-03 | Configure app icon + launch screen | 🔄 | 2 | 1 | 2026-07-01 | 2026-07-01 | 2026-06-28 | — | T002-01 |
+| T002-04 | Set up Clean Architecture folder structure | ✅ | 2 | 2 | 2026-07-01 | 2026-07-02 | 2026-06-28 | 2026-06-28 | T002-01 |
+| T002-05 | Configure SwiftData container (AppDatabase) | ⏸ | 3 | — | 2026-07-02 | 2026-07-02 | — | — | T002-04 |
 | T002-06 | Set up StoreKit 2 configuration file | 📅 | 2 | — | 2026-07-02 | 2026-07-02 | — | — | T002-04 |
-| T002-07 | Implement AppCoordinator navigation | 📅 | 2 | — | 2026-07-02 | 2026-07-03 | — | — | T002-04 |
+| T002-07 | Implement AppCoordinator navigation | ✅ | 2 | 2 | 2026-07-02 | 2026-07-03 | 2026-06-28 | 2026-06-28 | T002-04 |
+
+**Phase 1 implementation notes (FOLDLIGHT-PROMPT-001, executed 2026-06-28):**
+- T002-03: Launch screen generated via `INFOPLIST_KEY_UILaunchScreen_Generation`. App icon set is a placeholder (1024px slot, no artwork yet — pending E010). Marked In Progress.
+- T002-05: **Deferred for the MVP foundation.** Per the Phase 1 prompt ("Use local persistence appropriate for MVP — Codable + file storage or UserDefaults"), persistence is implemented via a real `FileSaveService` (Codable + atomic file storage) plus a `PreferencesStore` (UserDefaults). SwiftData migration is planned for a later phase and the `SaveService` protocol isolates that swap.
+- T002-07: Implemented as `AppRouter` (NavigationStack path coordinator) + `AppEnvironment` composition root.
+- Also delivered ahead of schedule: shared design system (tokens + components), Home/Settings foundation screens (see E007), haptics service, audio service stub, local analytics stub, and unit tests.
 
 ---
 
@@ -153,12 +159,12 @@
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T007-01 | Main Menu / Home Screen | 📅 | 3 | — | 2026-08-24 | 2026-08-25 | — | — | E006 |
+| T007-01 | Main Menu / Home Screen | 🔄 | 3 | 1 | 2026-08-24 | 2026-08-25 | 2026-06-28 | — | E006 |
 | T007-02 | World Map Screen (10 biomes) | 📅 | 5 | — | 2026-08-25 | 2026-08-27 | — | — | T007-01 |
 | T007-03 | Level Select Screen (per biome) | 📅 | 3 | — | 2026-08-27 | 2026-08-28 | — | — | T007-02 |
 | T007-04 | Puzzle HUD (moves, timer, hints) | 📅 | 3 | — | 2026-08-28 | 2026-08-29 | — | — | E006 |
 | T007-05 | Cosmetic Shop screen | 📅 | 5 | — | 2026-08-29 | 2026-08-31 | — | — | E008 |
-| T007-06 | Settings screen | 📅 | 2 | — | 2026-08-31 | 2026-09-01 | — | — | T007-01 |
+| T007-06 | Settings screen | 🔄 | 2 | 1 | 2026-08-31 | 2026-09-01 | 2026-06-28 | — | T007-01 |
 | T007-07 | Achievement screen | 📅 | 5 | — | 2026-09-01 | 2026-09-03 | — | — | T007-02 |
 | T007-08 | Daily Challenge screen | 📅 | 3 | — | 2026-09-03 | 2026-09-04 | — | — | T007-03 |
 | T007-09 | Onboarding / Tutorial flow | 📅 | 5 | — | 2026-09-04 | 2026-09-06 | — | — | T007-01 |
@@ -262,7 +268,7 @@
 | Epic | Name | Total Est SP | Status | Est Start | Est End |
 |------|------|-------------|--------|-----------|---------|
 | E001 | Project Setup & Docs | 21 | ✅ | 2026-06-27 | 2026-06-27 |
-| E002 | Xcode Initialization | 13 | 📅 | 2026-07-01 | 2026-07-03 |
+| E002 | Xcode Initialization | 13 | 🔄 | 2026-06-28 | 2026-07-03 |
 | E003 | Data Models | 21 | 📅 | 2026-07-03 | 2026-07-07 |
 | E004 | Fold Engine | 34 | 📅 | 2026-07-07 | 2026-07-21 |
 | E005 | Puzzle Generator | 26 | 📅 | 2026-07-21 | 2026-07-31 |
@@ -282,7 +288,8 @@
 | Sprint | Start | End | Planned SP | Actual SP | Notes |
 |--------|-------|-----|-----------|----------|-------|
 | Sprint 0 | 2026-06-27 | 2026-06-27 | 21 | 24 | Documentation sprint (E001) |
+| Sprint 1 | 2026-06-28 | 2026-06-28 | 13 | 9 | Foundation sprint (E002 + E007 Home/Settings foundation). App shell, navigation, services, persistence, design system, tests. |
 
 ---
 
-*Last updated: 2026-06-27*
+*Last updated: 2026-06-28*

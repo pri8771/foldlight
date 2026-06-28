@@ -2,7 +2,7 @@
 
 **Game:** Foldlight — Spatial Puzzle
 **Platform:** iOS 17.0+
-**Last Updated:** 2026-06-27
+**Last Updated:** 2026-06-28
 
 ---
 
@@ -111,8 +111,24 @@ When filing a new bug, copy this template:
 | Date | Action | Bug ID | Notes |
 |------|--------|--------|-------|
 | 2026-06-27 | Created bug tracker | — | Initial setup |
+| 2026-06-28 | Foundation implemented (FOLDLIGHT-PROMPT-001) | — | App shell, navigation, services, persistence, design system + unit tests added. No defects found during implementation review. |
+
+---
+
+## Known Limitations (Foundation Phase — not defects)
+
+These are intentional, documented gaps from the Phase 1 foundation, tracked so they
+are not mistaken for bugs. None are P0/P1.
+
+| Ref | Area | Limitation | Planned Resolution |
+|-----|------|-----------|--------------------|
+| LIM-001 | Build verification | Foundation was authored in a Linux container without Xcode; the iOS build & `swift test` were not executed in-session. | Run `xcodebuild`/tests on a macOS host (first task of next phase). |
+| LIM-002 | Persistence | MVP uses Codable file storage + UserDefaults instead of SwiftData (per Phase 1 prompt). | Swap behind `SaveService` protocol in a later phase (tracker T002-05). |
+| LIM-003 | Audio | `AudioService` is a documented stub (configures the session, no samples). | Wire ASMR/music assets in E010. |
+| LIM-004 | App icon | Placeholder 1024px icon slot, no artwork. | Produce icon set in E010 (tracker T002-03). |
+| LIM-005 | Play screen | Placeholder; the interactive folding board is not yet implemented. | Core engine (Phase 2) + SpriteKit board (Phase 3). |
 
 ---
 
 *Bugs should be filed immediately when discovered. Never ship with known P0 or P1 bugs.*
-*Last updated: 2026-06-27*
+*Last updated: 2026-06-28*

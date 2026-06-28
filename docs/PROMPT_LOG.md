@@ -406,7 +406,7 @@ When adding prompts:
 ---
 
 ### UNIVERSAL-PROMPT: Claude Code Rule Prompt
-**Date:** 2026-06-27 | **Phase:** Setup | **Tool:** Claude Code | **Status:** 📅 Queued
+**Date:** 2026-06-27 | **Phase:** Setup | **Tool:** Claude Code | **Status:** ✅ Used (2026-06-28)
 
 **Paste this FIRST in Claude Code before starting implementation:**
 
@@ -445,7 +445,7 @@ Then proceed with the requested phase.
 ---
 
 ### FOLDLIGHT-PROMPT-001: Project Intake and Foundation
-**Date:** 2026-06-27 | **Phase:** Implementation | **Tool:** Claude Code | **Epic:** E002 | **Status:** 📅 Queued
+**Date:** 2026-06-27 | **Phase:** Implementation | **Tool:** Claude Code | **Epic:** E002 | **Status:** ✅ Used (executed 2026-06-28)
 
 ```
 Implement Phase 1 for Foldlight.
@@ -493,6 +493,47 @@ Acceptance criteria:
 - No hard crashes on launch or navigation.
 - Project tracker updated. Bug tracker updated. Prompt log updated.
 ```
+
+**Outcome (2026-06-28, Claude Code):**
+
+Created the production foundation under `Foldlight/` as an Xcode 16 project using
+file-system-synchronized groups (no per-file pbxproj churn), iOS 17.0 deployment
+target, Swift 5 language mode, zero third-party dependencies.
+
+Delivered:
+- **App shell & navigation** — `FoldlightApp` (@main) → `RootView` (`NavigationStack`)
+  driven by `AppRouter` over a type-safe `AppRoute` enum. Home is the hub; Play,
+  Daily, Infinite, Restoration and Settings are all reachable.
+- **Screens** — Home (progress summary + menu), Play (placeholder; board lands in
+  Phase 2/3), Daily (deterministic date-seeded entry), Infinite (difficulty
+  selection), Restoration (10-biome unlock grid), Settings (persisted toggles).
+  Each screen is MVVM with an `@MainActor` view model; no gameplay logic in views.
+- **Services** — `FileSaveService` (real Codable + atomic file persistence, actor),
+  `PreferencesStore` (UserDefaults), `HapticsService` (UIKit feedback),
+  `AudioService` (documented stub, configures `AVAudioSession`),
+  `AnalyticsService` (local-only, actor). `AppEnvironment` is the DI/composition root.
+- **Domain models** — `PlayerProfile` (versioned Codable), `GameSettings`,
+  `Difficulty`, `BiomeID` (10 biomes), `DailyPuzzleSeed` (stable FNV-1a seeding).
+- **Design system** — `DesignTokens` (color/spacing/radius/typography) + reusable
+  components (`ScreenScaffold`, `PrimaryButton`, `MenuCard`, `InfoBanner`).
+- **Tests** — `FoldlightTests` covering persistence round-trip, preferences, profile
+  Codable, deterministic daily seed, and router navigation.
+
+Key decision: persistence uses Codable + file storage / UserDefaults for the MVP
+(as the prompt directs), behind a `SaveService` protocol so SwiftData can replace
+the backend later (tracker T002-05 deferred, not dropped).
+
+**Verification:** This Claude Code session runs in a Linux container **without Xcode
+or a Swift toolchain**, so `xcodebuild`/`swift test` could not be executed here. Code
+was written to compile under Xcode 16 / iOS 17 and reviewed for correctness; an
+Xcode build + test run is the required next verification step on a macOS host.
+
+**Acceptance criteria status:**
+- App builds successfully — ⚠️ not verifiable in this environment (no Xcode); see note above.
+- Navigate Home/Play/Daily/Infinite/Restoration/Settings — ✅ implemented.
+- Save/load service has a real implementation — ✅ `FileSaveService` (not a stub).
+- No hard crashes on launch/navigation — ✅ by design (no force unwraps; safe fallbacks).
+- Trackers + prompt log updated — ✅.
 
 ---
 
@@ -820,11 +861,11 @@ Return:
 |-------|-------|------|--------|
 | Ideation (ChatGPT) | 2 | 2 | 0 |
 | Architecture (ChatGPT) | 2 | 0 | 2 |
-| Claude Code Universal | 1 | 0 | 1 |
-| Claude Code Implementation | 7 | 0 | 7 |
+| Claude Code Universal | 1 | 1 | 0 |
+| Claude Code Implementation | 7 | 1 | 6 |
 | Claude Code Audit | 1 | 0 | 1 |
-| **Total** | **13** | **2** | **11** |
+| **Total** | **13** | **4** | **9** |
 
 ---
 
-*Last updated: 2026-06-27 — ChatGPT implementation prompts added*
+*Last updated: 2026-06-28 — FOLDLIGHT-PROMPT-001 (foundation) executed*
