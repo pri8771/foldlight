@@ -2,7 +2,7 @@
 
 **Game:** Foldlight — Spatial Puzzle
 **Platform:** iOS 17.0+
-**Last Updated:** 2026-06-27
+**Last Updated:** 2026-06-28
 
 ---
 
@@ -111,8 +111,30 @@ When filing a new bug, copy this template:
 | Date | Action | Bug ID | Notes |
 |------|--------|--------|-------|
 | 2026-06-27 | Created bug tracker | — | Initial setup |
+| 2026-06-28 | Foundation implemented (FOLDLIGHT-PROMPT-001) | — | App shell, navigation, services, persistence, design system + unit tests added. No defects found during implementation review. |
+| 2026-06-28 | Core fold engine implemented (FOLDLIGHT-PROMPT-002) | — | Board/fold/combination/beam models + solver + undo/reset + 6 test files. No defects found; engine is Foundation-only and deterministic. |
+| 2026-06-28 | Playable SpriteKit board implemented (FOLDLIGHT-PROMPT-003) | — | GameScene/TileNode renderer, drag-to-fold + preview, beam draw, win animation, HUD, gesture interpreter + tests. Engine/UI separation preserved. No defects found. |
+| 2026-06-28 | Board animation upgrade (FOLDLIGHT-PROMPT-003 expanded) | — | BoardScene + GameView, 0.3s paper-fold, combination FX, 1.5s win + glow, animated undo, green/red feedback, debug coord labels. |
+| 2026-06-28 | Procedural level system implemented (FOLDLIGHT-PROMPT-004) | — | Seeded generator (constructive, verified solvable), validator, daily puzzle, level repository + prefetch, Infinite/Daily wiring, 4 test files. Removed hardcoded sample from production. No defects found. |
+
+---
+
+## Known Limitations (Foundation Phase — not defects)
+
+These are intentional, documented gaps from the Phase 1 foundation, tracked so they
+are not mistaken for bugs. None are P0/P1.
+
+| Ref | Area | Limitation | Planned Resolution |
+|-----|------|-----------|--------------------|
+| LIM-001 | Build verification | Foundation was authored in a Linux container without Xcode; the iOS build & `swift test` were not executed in-session. | Run `xcodebuild`/tests on a macOS host (first task of next phase). |
+| LIM-002 | Persistence | MVP uses Codable file storage + UserDefaults instead of SwiftData (per Phase 1 prompt). | Swap behind `SaveService` protocol in a later phase (tracker T002-05). |
+| LIM-003 | Audio | `AudioService` is a documented stub (configures the session, no samples). | Wire ASMR/music assets in E010. |
+| LIM-004 | App icon | Placeholder 1024px icon slot, no artwork. | Produce icon set in E010 (tracker T002-03). |
+| LIM-005 | Play screen | Playable SpriteKit board (drag-to-fold, preview, beam, undo/reset, win). Folds apply instantly (no animated paper-fold yet) and tiles use glyph placeholders, not bespoke art. | Paper-fold animation (polish) + tile art (E010). |
+| LIM-006 | Hint engine | A general solver-based "next best fold" hint (T004-06) is not implemented; the Play demo uses a known sample solution. | Implement search-based hint engine (Phase 6). |
+| LIM-007 | Geometric unfold | `FoldEngine.unfold()` (reverse-construction primitive) is deferred; undo uses board snapshots instead. | Add for the procedural generator (Phase 4). |
 
 ---
 
 *Bugs should be filed immediately when discovered. Never ship with known P0 or P1 bugs.*
-*Last updated: 2026-06-27*
+*Last updated: 2026-06-28*

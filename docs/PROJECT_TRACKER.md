@@ -3,7 +3,7 @@
 **Game:** Foldlight — Spatial Puzzle
 **Platform:** iOS 17.0+
 **Stack:** Swift / SwiftUI / SpriteKit / SwiftData / StoreKit 2
-**Last Updated:** 2026-06-27
+**Last Updated:** 2026-06-28
 
 ---
 
@@ -49,18 +49,24 @@
 ## EPIC E002: Xcode Project Initialization
 
 **Goal:** Set up Xcode project with proper architecture skeleton
-**Status:** 📅 Not Started
-**Est SP:** 13 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 13 | **Actual SP:** 9 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T002-01 | Create Xcode project (FoldlightApp) | 📅 | 1 | — | 2026-07-01 | 2026-07-01 | — | — | E001 |
-| T002-02 | Set deployment target: iOS 17.0 | 📅 | 1 | — | 2026-07-01 | 2026-07-01 | — | — | T002-01 |
-| T002-03 | Configure app icon + launch screen | 📅 | 2 | — | 2026-07-01 | 2026-07-01 | — | — | T002-01 |
-| T002-04 | Set up Clean Architecture folder structure | 📅 | 2 | — | 2026-07-01 | 2026-07-02 | — | — | T002-01 |
-| T002-05 | Configure SwiftData container (AppDatabase) | 📅 | 3 | — | 2026-07-02 | 2026-07-02 | — | — | T002-04 |
+| T002-01 | Create Xcode project (FoldlightApp) | ✅ | 1 | 1 | 2026-07-01 | 2026-07-01 | 2026-06-28 | 2026-06-28 | E001 |
+| T002-02 | Set deployment target: iOS 17.0 | ✅ | 1 | 1 | 2026-07-01 | 2026-07-01 | 2026-06-28 | 2026-06-28 | T002-01 |
+| T002-03 | Configure app icon + launch screen | 🔄 | 2 | 1 | 2026-07-01 | 2026-07-01 | 2026-06-28 | — | T002-01 |
+| T002-04 | Set up Clean Architecture folder structure | ✅ | 2 | 2 | 2026-07-01 | 2026-07-02 | 2026-06-28 | 2026-06-28 | T002-01 |
+| T002-05 | Configure SwiftData container (AppDatabase) | ⏸ | 3 | — | 2026-07-02 | 2026-07-02 | — | — | T002-04 |
 | T002-06 | Set up StoreKit 2 configuration file | 📅 | 2 | — | 2026-07-02 | 2026-07-02 | — | — | T002-04 |
-| T002-07 | Implement AppCoordinator navigation | 📅 | 2 | — | 2026-07-02 | 2026-07-03 | — | — | T002-04 |
+| T002-07 | Implement AppCoordinator navigation | ✅ | 2 | 2 | 2026-07-02 | 2026-07-03 | 2026-06-28 | 2026-06-28 | T002-04 |
+
+**Phase 1 implementation notes (FOLDLIGHT-PROMPT-001, executed 2026-06-28):**
+- T002-03: Launch screen generated via `INFOPLIST_KEY_UILaunchScreen_Generation`. App icon set is a placeholder (1024px slot, no artwork yet — pending E010). Marked In Progress.
+- T002-05: **Deferred for the MVP foundation.** Per the Phase 1 prompt ("Use local persistence appropriate for MVP — Codable + file storage or UserDefaults"), persistence is implemented via a real `FileSaveService` (Codable + atomic file storage) plus a `PreferencesStore` (UserDefaults). SwiftData migration is planned for a later phase and the `SaveService` protocol isolates that swap.
+- T002-07: Implemented as `AppRouter` (NavigationStack path coordinator) + `AppEnvironment` composition root.
+- Also delivered ahead of schedule: shared design system (tokens + components), Home/Settings foundation screens (see E007), haptics service, audio service stub, local analytics stub, and unit tests.
 
 ---
 
@@ -88,60 +94,95 @@
 ## EPIC E004: Core Fold Engine
 
 **Goal:** Implement the spatial folding mechanic with all tile combinations
-**Status:** 📅 Not Started
-**Est SP:** 34 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 34 | **Actual SP:** 24 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T004-01 | Implement FoldEngine.fold(axis:position:) | 📅 | 5 | — | 2026-07-07 | 2026-07-09 | — | — | E003 |
-| T004-02 | Implement FoldEngine.unfold() | 📅 | 3 | — | 2026-07-09 | 2026-07-10 | — | — | T004-01 |
-| T004-03 | Implement tile combination resolution logic | 📅 | 8 | — | 2026-07-10 | 2026-07-14 | — | — | T004-01 |
-| T004-04 | Implement light beam propagation algorithm | 📅 | 5 | — | 2026-07-14 | 2026-07-16 | — | — | T004-03 |
-| T004-05 | Implement win condition detection | 📅 | 2 | — | 2026-07-16 | 2026-07-16 | — | — | T004-04 |
+| T004-01 | Implement FoldEngine.fold(axis:position:) | ✅ | 5 | 5 | 2026-07-07 | 2026-07-09 | 2026-06-28 | 2026-06-28 | E003 |
+| T004-02 | Implement FoldEngine.unfold() | 🔄 | 3 | 2 | 2026-07-09 | 2026-07-10 | 2026-06-28 | — | T004-01 |
+| T004-03 | Implement tile combination resolution logic | ✅ | 8 | 6 | 2026-07-10 | 2026-07-14 | 2026-06-28 | 2026-06-28 | T004-01 |
+| T004-04 | Implement light beam propagation algorithm | ✅ | 5 | 5 | 2026-07-14 | 2026-07-16 | 2026-06-28 | 2026-06-28 | T004-03 |
+| T004-05 | Implement win condition detection | ✅ | 2 | 2 | 2026-07-16 | 2026-07-16 | 2026-06-28 | 2026-06-28 | T004-04 |
 | T004-06 | Implement hint engine (next best fold) | 📅 | 5 | — | 2026-07-17 | 2026-07-19 | — | — | T004-03 |
-| T004-07 | Write unit tests for fold engine | 📅 | 6 | — | 2026-07-19 | 2026-07-21 | — | — | T004-06 |
+| T004-07 | Write unit tests for fold engine | ✅ | 6 | 4 | 2026-07-19 | 2026-07-21 | 2026-06-28 | 2026-06-28 | T004-06 |
+
+**Phase 2 implementation notes (FOLDLIGHT-PROMPT-002, executed 2026-06-28):**
+- Engine lives in `Foldlight/Core/Engine/` and is **Foundation-only** (no SwiftUI/SpriteKit/UIKit imports), satisfying the UI-independence acceptance criterion. Models: `Board`, `BoardCoordinate`, `Cell` (layer/overlap representation), `Tile`, `TileType`, `Orientation`, `Fold`/`FoldDirection`/`FoldAxis`, `CombinationResult`/`CombinationMatrix`, `Beam*`, `Puzzle`/`PuzzleGoal`/`PuzzleResult`, `PuzzleState`.
+- T004-01: `FoldEngine.apply` mirror-transforms the source region, resolves overlaps via the combination matrix, and recomputes board bounds (supports board growth). `replay` gives deterministic fold replay.
+- T004-02: Undo/reset implemented in `PuzzleState` via bounded board snapshots (max 20, per PRD §3.5). Geometric `unfold()` (reverse-construction primitive for the generator) is deferred to Phase 4 — In Progress.
+- T004-03: All 8 documented combination rules (symmetric) including win, connected path, reflected beam, revealed path, opened gate, grown bridge, steam blocker, captured monster.
+- T004-04/05: `BeamSolver` raycasts from the source, reflects off mirrors (orientation-dependent), blocks on opaque tiles, detects goal, and caps at 100 steps (loop guard). Win = beam reaches goal OR a fold overlaps light onto the goal.
+- T004-06: Not implemented as a general solver-based hint engine. The Play demo uses a known sample solution as a placeholder hint; a search-based hint engine remains 📅.
+- T004-07: 6 engine test files (board, combinations, fold engine, beam solver, puzzle state) covering the full prompt test matrix. Sample `firstFold` puzzle is solvable through engine calls.
+- Lightweight non-SpriteKit demo wired through `PlayView`/`PlayViewModel` so the engine is playable in-app ahead of the Phase 3 SpriteKit board.
 
 ---
 
 ## EPIC E005: Procedural Puzzle Generator
 
 **Goal:** Build reverse-construction puzzle generator
-**Status:** 📅 Not Started
-**Est SP:** 26 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 26 | **Actual SP:** 22 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T005-01 | Implement solved board factory | 📅 | 3 | — | 2026-07-21 | 2026-07-22 | — | — | E004 |
-| T005-02 | Implement reverse fold scrambler | 📅 | 5 | — | 2026-07-22 | 2026-07-24 | — | — | T005-01 |
-| T005-03 | Implement difficulty classifier | 📅 | 5 | — | 2026-07-24 | 2026-07-26 | — | — | T005-02 |
-| T005-04 | Implement puzzle uniqueness validator | 📅 | 3 | — | 2026-07-26 | 2026-07-27 | — | — | T005-02 |
-| T005-05 | Implement DifficultyProgression curve | 📅 | 3 | — | 2026-07-27 | 2026-07-28 | — | — | T005-03 |
-| T005-06 | Build batch generation pipeline (async) | 📅 | 5 | — | 2026-07-28 | 2026-07-30 | — | — | T005-04 |
-| T005-07 | Write unit tests for generator | 📅 | 2 | — | 2026-07-30 | 2026-07-31 | — | — | T005-06 |
+| T005-01 | Implement solved board factory | ✅ | 3 | 3 | 2026-07-21 | 2026-07-22 | 2026-06-28 | 2026-06-28 | E004 |
+| T005-02 | Implement reverse fold scrambler | ✅ | 5 | 5 | 2026-07-22 | 2026-07-24 | 2026-06-28 | 2026-06-28 | T005-01 |
+| T005-03 | Implement difficulty classifier | ✅ | 5 | 3 | 2026-07-24 | 2026-07-26 | 2026-06-28 | 2026-06-28 | T005-02 |
+| T005-04 | Implement puzzle uniqueness validator | 🔄 | 3 | 2 | 2026-07-26 | 2026-07-27 | 2026-06-28 | — | T005-02 |
+| T005-05 | Implement DifficultyProgression curve | ✅ | 3 | 2 | 2026-07-27 | 2026-07-28 | 2026-06-28 | 2026-06-28 | T005-03 |
+| T005-06 | Build batch generation pipeline (async) | ✅ | 5 | 5 | 2026-07-28 | 2026-07-30 | 2026-06-28 | 2026-06-28 | T005-04 |
+| T005-07 | Write unit tests for generator | ✅ | 2 | 2 | 2026-07-30 | 2026-07-31 | 2026-06-28 | 2026-06-28 | T005-06 |
+
+**Phase 4 implementation notes (FOLDLIGHT-PROMPT-004, executed 2026-06-28):**
+- `Foldlight/Features/Levels/`: `SeededGenerator` (SplitMix64), `PuzzleGenerator` (actor), `PuzzleValidator`, `DailyPuzzleService` (actor), `LevelRepository` (actor), `GameRequest`. `Puzzle` gained an optional `solution: [Fold]`.
+- **Construction deviation (documented):** the engine's fold is destructive (boards shrink, tiles merge), so literal "apply-N-folds-then-invert" is not reversible. Instead the generator uses an equivalent *constructive reverse-generation*: lay a solved line, displace one path tile N rows down, so the forward solution is exactly N `bottomOntoTop` folds. This is **provably solvable in N folds** and engine-verified by `PuzzleValidator` (replays the embedded solution).
+- T005-03: difficulty = fold count via `Difficulty.foldRange` (Easy ≤3, Medium 4–6, Hard 7–9, Expert 10–12 capped).
+- T005-04: `PuzzleValidator` certifies solvable + non-trivial (`.valid`/`.unsolvable`/`.trivial`); **unique-solution** enforcement is not yet implemented (In Progress).
+- T005-05: Infinite Mode cycles difficulty up one tier after every 3 clears.
+- T005-06: `LevelRepository` keeps a 3-puzzle pre-generated queue per difficulty (background prefetch hides latency).
+- Daily puzzle: deterministic Medium puzzle seeded by `year*10000+month*100+day`, cached per session.
+- Wiring: `AppEnvironment` owns the generator/daily/repository + `pendingGameRequest`; `GameViewModel` loads daily/infinite; Home/Daily/Infinite screens set the request. `SamplePuzzles.swift` removed from production (moved to a test fixture). Generation is deterministic and completes in <1ms for these board sizes (well under the 500ms budget).
+- **Known limitation:** visual variety is currently low (single displaced tile; varying width/column/fold-count). Richer layouts (mirrors, multi-tile, decoys) are a follow-up.
 
 ---
 
 ## EPIC E006: SpriteKit Game Scene
 
 **Goal:** Build the visual puzzle board with animations
-**Status:** 📅 Not Started
-**Est SP:** 55 | **Actual SP:** —
+**Status:** 🔄 In Progress
+**Est SP:** 55 | **Actual SP:** 18 (so far)
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T006-01 | Set up SpriteKit GameScene with SKCamera | 📅 | 3 | — | 2026-08-01 | 2026-08-02 | — | — | E004 |
-| T006-02 | Implement BoardNode (tile grid rendering) | 📅 | 5 | — | 2026-08-02 | 2026-08-04 | — | — | T006-01 |
-| T006-03 | Implement TileNode with 7 tile designs | 📅 | 8 | — | 2026-08-04 | 2026-08-08 | — | — | T006-02 |
-| T006-04 | Implement swipe/tap gesture recognition | 📅 | 3 | — | 2026-08-08 | 2026-08-09 | — | — | T006-01 |
-| T006-05 | Implement fold animation (paper-fold physics) | 📅 | 8 | — | 2026-08-09 | 2026-08-13 | — | — | T006-03 |
-| T006-06 | Implement light beam particle animation | 📅 | 5 | — | 2026-08-13 | 2026-08-15 | — | — | T006-03 |
-| T006-07 | Implement tile combination visual effects | 📅 | 5 | — | 2026-08-15 | 2026-08-17 | — | — | T006-05 |
-| T006-08 | Implement win celebration animation | 📅 | 3 | — | 2026-08-17 | 2026-08-18 | — | — | T006-07 |
+| T006-01 | Set up SpriteKit GameScene with SKCamera | 🔄 | 3 | 2 | 2026-08-01 | 2026-08-02 | 2026-06-28 | — | E004 |
+| T006-02 | Implement BoardNode (tile grid rendering) | ✅ | 5 | 4 | 2026-08-02 | 2026-08-04 | 2026-06-28 | 2026-06-28 | T006-01 |
+| T006-03 | Implement TileNode with 7 tile designs | ✅ | 8 | 4 | 2026-08-04 | 2026-08-08 | 2026-06-28 | 2026-06-28 | T006-02 |
+| T006-04 | Implement swipe/tap gesture recognition | ✅ | 3 | 3 | 2026-08-08 | 2026-08-09 | 2026-06-28 | 2026-06-28 | T006-01 |
+| T006-05 | Implement fold animation (paper-fold physics) | ✅ | 8 | 6 | 2026-08-09 | 2026-08-13 | 2026-06-28 | 2026-06-28 | T006-03 |
+| T006-06 | Implement light beam particle animation | 🔄 | 5 | 2 | 2026-08-13 | 2026-08-15 | 2026-06-28 | — | T006-03 |
+| T006-07 | Implement tile combination visual effects | ✅ | 5 | 4 | 2026-08-15 | 2026-08-17 | 2026-06-28 | 2026-06-28 | T006-05 |
+| T006-08 | Implement win celebration animation | ✅ | 3 | 3 | 2026-08-17 | 2026-08-18 | 2026-06-28 | 2026-06-28 | T006-07 |
 | T006-09 | Implement camera zoom/pan for large boards | 📅 | 3 | — | 2026-08-18 | 2026-08-19 | — | — | T006-01 |
-| T006-10 | Implement undo/redo visual feedback | 📅 | 2 | — | 2026-08-19 | 2026-08-20 | — | — | T006-05 |
+| T006-10 | Implement undo/redo visual feedback | ✅ | 2 | 2 | 2026-08-19 | 2026-08-20 | 2026-06-28 | 2026-06-28 | T006-05 |
 | T006-11 | Implement hint visual overlay | 📅 | 3 | — | 2026-08-20 | 2026-08-21 | — | — | T006-04 |
-| T006-12 | Audio: fold ASMR sounds + music integration | 📅 | 5 | — | 2026-08-21 | 2026-08-23 | — | — | T006-05 |
-| T006-13 | 60fps/120fps performance optimization | 📅 | 2 | — | 2026-08-23 | 2026-08-24 | — | — | T006-09 |
+| T006-12 | Audio: fold ASMR sounds + music integration | 🔄 | 5 | 1 | 2026-08-21 | 2026-08-23 | 2026-06-28 | — | T006-05 |
+| T006-13 | 60fps/120fps performance optimization | 🔄 | 2 | 1 | 2026-08-23 | 2026-08-24 | 2026-06-28 | — | T006-09 |
+
+**Phase 3 implementation notes (FOLDLIGHT-PROMPT-003, executed 2026-06-28):**
+- Renderer lives in `Foldlight/Features/Game/` (`GameScene`, `TileNode`, `GameTheme`) and the gesture mapping in `FoldGestureInterpreter` (pure, unit-tested). `GameViewModel` is the MVVM bridge; the scene proposes folds and the VM applies them through the engine — **no gameplay rules in the rendering layer** (acceptance criterion met).
+- T006-01: `GameScene` renders + handles input. `SKCamera` (zoom/pan) deferred to T006-09 — not needed for current board sizes (In Progress).
+- T006-02/03: Grid rendering + `TileNode` with all engine tile types and 3 visual states (idle / lit-by-beam / emphasized). Bespoke per-type art is E010; glyph placeholders for now.
+- T006-04: Drag-to-fold gestures with start-cell = flap edge, drag direction = fold direction; fold preview shows source region + destination outlines and legal/illegal tint.
+- T006-05: Folds apply with preview + shake feedback; the animated paper-fold transition is deferred to polish (In Progress).
+- T006-06: Beam rendered as a glowing stroked line; particle-based beam deferred (In Progress).
+- T006-08: Win celebration (radiating ring + sparks) + SwiftUI overlay.
+- T006-12: Sound hooks wired to the (stub) audio service; ASMR samples land in E010.
+- Haptics for fold / invalid fold / undo / completion are wired via the haptics service.
+
+### E007-04 Puzzle HUD (delivered alongside E006)
+The Play screen HUD (move count, puzzle status, undo/reset buttons, win overlay) is implemented in `PlayView`. Timer and hint controls remain pending. See E007 table (T007-04 → 🔄).
 
 ---
 
@@ -153,12 +194,12 @@
 
 | Task ID | Task | Status | Est SP | Act SP | Est Start | Est End | Act Start | Act End | Dependencies |
 |---------|------|--------|--------|--------|-----------|---------|-----------|---------|--------------|
-| T007-01 | Main Menu / Home Screen | 📅 | 3 | — | 2026-08-24 | 2026-08-25 | — | — | E006 |
+| T007-01 | Main Menu / Home Screen | 🔄 | 3 | 1 | 2026-08-24 | 2026-08-25 | 2026-06-28 | — | E006 |
 | T007-02 | World Map Screen (10 biomes) | 📅 | 5 | — | 2026-08-25 | 2026-08-27 | — | — | T007-01 |
 | T007-03 | Level Select Screen (per biome) | 📅 | 3 | — | 2026-08-27 | 2026-08-28 | — | — | T007-02 |
-| T007-04 | Puzzle HUD (moves, timer, hints) | 📅 | 3 | — | 2026-08-28 | 2026-08-29 | — | — | E006 |
+| T007-04 | Puzzle HUD (moves, timer, hints) | 🔄 | 3 | 2 | 2026-08-28 | 2026-08-29 | 2026-06-28 | — | E006 |
 | T007-05 | Cosmetic Shop screen | 📅 | 5 | — | 2026-08-29 | 2026-08-31 | — | — | E008 |
-| T007-06 | Settings screen | 📅 | 2 | — | 2026-08-31 | 2026-09-01 | — | — | T007-01 |
+| T007-06 | Settings screen | 🔄 | 2 | 1 | 2026-08-31 | 2026-09-01 | 2026-06-28 | — | T007-01 |
 | T007-07 | Achievement screen | 📅 | 5 | — | 2026-09-01 | 2026-09-03 | — | — | T007-02 |
 | T007-08 | Daily Challenge screen | 📅 | 3 | — | 2026-09-03 | 2026-09-04 | — | — | T007-03 |
 | T007-09 | Onboarding / Tutorial flow | 📅 | 5 | — | 2026-09-04 | 2026-09-06 | — | — | T007-01 |
@@ -262,11 +303,11 @@
 | Epic | Name | Total Est SP | Status | Est Start | Est End |
 |------|------|-------------|--------|-----------|---------|
 | E001 | Project Setup & Docs | 21 | ✅ | 2026-06-27 | 2026-06-27 |
-| E002 | Xcode Initialization | 13 | 📅 | 2026-07-01 | 2026-07-03 |
+| E002 | Xcode Initialization | 13 | 🔄 | 2026-06-28 | 2026-07-03 |
 | E003 | Data Models | 21 | 📅 | 2026-07-03 | 2026-07-07 |
-| E004 | Fold Engine | 34 | 📅 | 2026-07-07 | 2026-07-21 |
-| E005 | Puzzle Generator | 26 | 📅 | 2026-07-21 | 2026-07-31 |
-| E006 | SpriteKit Scene | 55 | 📅 | 2026-08-01 | 2026-08-24 |
+| E004 | Fold Engine | 34 | 🔄 | 2026-06-28 | 2026-07-21 |
+| E005 | Puzzle Generator | 26 | 🔄 | 2026-06-28 | 2026-07-31 |
+| E006 | SpriteKit Scene | 55 | 🔄 | 2026-06-28 | 2026-08-24 |
 | E007 | SwiftUI Screens | 40 | 📅 | 2026-08-24 | 2026-09-09 |
 | E008 | Monetization (StoreKit 2) | 21 | 📅 | 2026-09-09 | 2026-09-15 |
 | E009 | Game Center | 13 | 📅 | 2026-09-15 | 2026-09-19 |
@@ -282,7 +323,12 @@
 | Sprint | Start | End | Planned SP | Actual SP | Notes |
 |--------|-------|-----|-----------|----------|-------|
 | Sprint 0 | 2026-06-27 | 2026-06-27 | 21 | 24 | Documentation sprint (E001) |
+| Sprint 1 | 2026-06-28 | 2026-06-28 | 13 | 9 | Foundation sprint (E002 + E007 Home/Settings foundation). App shell, navigation, services, persistence, design system, tests. |
+| Sprint 2 | 2026-06-28 | 2026-06-28 | 34 | 24 | Core fold engine (E004): board/fold/combination models, fold application, beam solver, undo/reset, serialization, 6 test files + in-app demo. |
+| Sprint 3 | 2026-06-28 | 2026-06-28 | 55 | 18 | Playable SpriteKit board (E006 + E007-04 HUD): GameScene/TileNode renderer, drag-to-fold + preview, beam draw, win animation, GameViewModel bridge, gesture interpreter + tests. |
+| Sprint 3b | 2026-06-28 | 2026-06-28 | — | 8 | Board animation upgrade: BoardScene + GameView, 0.3s paper-fold, combination FX, 1.5s win, animated undo, green/red feedback. |
+| Sprint 4 | 2026-06-28 | 2026-06-28 | 26 | 22 | Procedural level system (E005): seeded generator, validator, daily puzzle, level repository + prefetch, Infinite/Daily wiring, 4 test files. Removed hardcoded sample from production. |
 
 ---
 
-*Last updated: 2026-06-27*
+*Last updated: 2026-06-28*
